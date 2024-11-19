@@ -4,7 +4,10 @@ const sqlite3 = require('sqlite3').verbose();
 const app = express();
 const port = 3000;  // Change to a different port
 
-app.use(cors());  // Enable CORS for all routes
+app.use(cors({
+  origin: true,  // This allows all origins
+  credentials: true
+}));
 app.use(express.json());
 
 // Setup SQLite database
@@ -36,5 +39,5 @@ app.get('/retrieve', (req, res) => {
 
 // Start server
 app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+  console.log(`Server running on http://192.168.86.195:${port}`);
 });

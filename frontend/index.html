@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQLite with Vite</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+    h1 { font-size: 2em; }
+    button { padding: 10px 20px; font-size: 1.2em; cursor: pointer; }
+    .data { margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+  <h1>SQLite Data with Vite</h1>
+
+  <button id="storeButton">Store Data</button>
+  <div class="data" id="data"></div>
+
+  <script>
+    const storeButton = document.getElementById('storeButton');
+    const dataDiv = document.getElementById('data');
+
+    // Store data function
+    storeButton.addEventListener('click', async () => {
+      const value = Math.floor(Math.random() * 100);  // Generate a random value
+      try {
+        const response = await fetch('http://localhost:3000/store', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ value })
+        });
+        const result = await response.json();
+        console.log('Data Stored:', result);
+
+        // After storing, retrieve data
+        getData();
+      } catch (error) {
+        console.error('Error storing data:', error);
+      }
+    });
+
+    // Fetch and display data from SQLite database
+    async function getData() {
+      try {
+        const response = await fetch('http://localhost:3000/retrieve');
+        const data = await response.json();
+        dataDiv.innerHTML = data.map(item => `<p>Stored Value: ${item.value}</p>`).join('');
+      } catch (error) {
+        console.error('Error retrieving data:', error);
+      }
+    }
+
+    // Get initial data when the page loads
+    getData();
+  </script>
+
+</body>
+</html>

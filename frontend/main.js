@@ -1,24 +1,35 @@
-import './style.css'
-import javascriptLogo from './javascript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.js'
+const storeButton = document.getElementById('storeButton');
+const dataDiv = document.getElementById('data');
 
-document.querySelector('#app').innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-      <img src="${javascriptLogo}" class="logo vanilla" alt="JavaScript logo" />
-    </a>
-    <h1>Hello Vite!</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite logo to learn more
-    </p>
-  </div>
-`
+// Store data function
+storeButton.addEventListener('click', async () => {
+  const value = Math.floor(Math.random() * 100);  // Generate a random value
+  try {
+    const response = await fetch('http://192.168.86.195:3000/store', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ value })
+    });
+    const result = await response.json();
+    console.log('Data Stored:', result);
 
-setupCounter(document.querySelector('#counter'))
+    // After storing, retrieve data
+    getData();
+  } catch (error) {
+    console.error('Error storing data:', error);
+  }
+});
+
+// Fetch and display data from SQLite database
+async function getData() {
+  try {
+    const response = await fetch('http://192.168.86.195:3000/retrieve');
+    const data = await response.json();
+    dataDiv.innerHTML = data.map(item => `<p>Stored Value: ${item.value}</p>`).join('');
+  } catch (error) {
+    console.error('Error retrieving data:', error);
+  }
+}
+
+// Get initial data when the page loads
+getData();

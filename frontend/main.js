@@ -1,3 +1,5 @@
+import { getOrCreateUniqueId } from "./getOrCreateUniqueId";
+
 const storeButton = document.getElementById('storeButton');
 const dataDiv = document.getElementById('data');
 
@@ -31,5 +33,6 @@ async function getData() {
   }
 }
 
+getOrCreateUniqueId();
 // Get initial data when the page loads
 getData();
